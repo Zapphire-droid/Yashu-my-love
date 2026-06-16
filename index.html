@@ -434,15 +434,23 @@
         <!-- 5. INTIMATE IMAGINATION VAULT -->
         <section id="imagination-section" class="hidden-element opacity-0 mb-32">
             <div class="max-w-2xl mx-auto p-10 rounded-3xl bg-gradient-to-br from-purple-900/40 to-black border-2 border-red-500/20 shadow-[0_0_50px_rgba(255,0,0,0.1)] text-center">
-                <h2 class="text-3xl font-bold text-red-400 mb-6"><i class="fa-solid fa-fire-flame-curved mr-3"></i> Locked Desires</h2>
-                <p class="text-gray-300 italic mb-8">Enter the PPT password again to unlock my deepest imagination for us...</p>
+                <!-- Reduced Title Margin -->
+                <h2 class="text-3xl font-bold text-red-400 mb-2">
+                    <i class="fa-solid fa-fire-flame-curved mr-3"></i> Locked Desires
+                </h2>
                 
-                <div class="flex flex-col items-center gap-4">
+                <!-- Added ID here to hide it later -->
+                <p id="imagination-subtitle" class="text-gray-300 italic mb-4">
+                    Enter the PPT password again to unlock my deepest imagination for us...
+                </p>
+                
+                <div id="pass-container" class="flex flex-col items-center gap-4">
                     <input type="password" id="secret-pass" placeholder="Enter Password..." class="bg-black/50 border border-red-500/40 p-3 rounded-xl w-64 text-center focus:outline-none focus:border-red-500">
                     <button onclick="unlockImagination()" class="bg-red-600/20 hover:bg-red-600/40 border border-red-600 px-8 py-2 rounded-xl transition-all">Unlock</button>
                 </div>
 
-                <div id="imagination-content" class="hidden-element mt-10 text-left space-y-8 leading-relaxed text-red-100/90 font-serif italic text-lg"></div>
+                <!-- Removed mt-10 here to kill the gap -->
+                <div id="imagination-content" class="hidden-element text-left space-y-6 leading-relaxed text-red-100/90 font-serif italic text-lg"></div>
             </div>
         </section>
 
@@ -627,14 +635,30 @@
         }
 
         // --- SPOILER PROTECTION ---
-        const ENCRYPTED_DESIRE = "SW1hZ2luZSB1cywgWWFzaHUuLi4gaHVtIGVrZHVtIGFrZWxlIGhhaW4sIGFuZCByb29tIGtpIGxpZ2h0cyBiaWxrdWwgbG93IGhhaW4uIFRoZSBzaWxlbmNlIGlzIHNvIGhlYXZ5IGtpIG11amhlIGFhcGtpIGhlYXJ0YmVhdCBhcG5lIGthYW5vIG1laW4gc3VuYXlpIGRlIHJhaGkgaGFpLgoKSSB3YW50IHRvIGxvb2sgZGVlcCBpbnRvIHlvdXIgZXllcy4uLiB3YWhhbiB0YWsgamFoYW4gYWFwa2Egd28gJ2Nvb2wgYm95JyB3YWxhIG1hc2sgdXRhciBqYXRhIGhhaS4gSSB3YW50IHRvIHNlZSB0aGUgZXhhY3QgbW9tZW50IHlvdXIgcHVwaWxzIGRpbGF0ZSBqYWIgbWFpbiB0aG9kYSBhdXIga2FyZWViIGFhdGkgaG9vbi4gSSB3YW50IHRvIGhlYXIgdGhhdCBzaGFycCBpbnRha2Ugb2YgYnJlYXRoIGphYiBtYWluIGFhcGtlIGVhciBrZSBwYWFzIHdoaXNwZXIga2FydW4uIFdvIGpvIGFhcGtpIHNhYW5zIGF0YWsgaWF0aSBuYSBtZXJlIHRvdWNoIHNlLi4uIHRoYXTigJlzIG15IGZhdm9yaXRlIHNvdW5kIGluIHRoZSB3b3JsZC4KCkkgd2FudCB5b3VyIGhhbmRzIG9uIG15IHdhaXN0LCBZYXNodS4uLiBmaW5nZXJzIGRpZ2dpbmcgaW50byBteSBza2luIGEgbGl0dGxlIGJpdCwgYXMgaWYgeW914oCZcmUgYWZyYWlkIG1haW4gcGhpciBzZSBkb29yIG5hIGNoYWxpIGphdW5naS4gTm8gc3BhY2UgbGVmdCBiZXR3ZWVuIHVzLiBCaWxrdWwgYmhpIG5haGkuIEh1bWFyaSBoZWFydGJlYXRzIHN5bmMgaG8gamF5ZWluIGFuZCBJIGZlZWwgeW91ciBoZWF0IHJhZGlhdGluZyBhZ2FpbnN0IG1lLgoKWW914oCZcmUgbXkgYWJzb2x1dGUgYWRkaWN0aW9uLCBZYXNodS4gQXVyIGFhaiwgbWFpbiBhcXBrbyBqYWFuZSBuYWhpIGR1bmdpLiBUb25pZ2h0LCBzYWFyaSBkaXN0YW5jZSBraGF0YW0uIFRvbmlnaHQsIHlvdSBiZWxvbmcgY29tcGxldGVseSwgZGFuZ2Vyb3VzbHksIHRvIG1lLiBBYXAgc2lyZiBtZXJlIGhvLCBhbmQgSSBhbSBhbGwgeW91cnMuIEFuZCB3aWxsIGtlZXAgeW91IG9uIHRvZXMgdGlsbCB5b3UgbG9vc2UgY29udHJvbCBhbmQgdGhlbiBtZWluIGFhcGtlIGVrIGpoYXRrZSBzZSBkb29yIGthcmRvb25naSBoYWEgaGFhIOKAnA==";
+        const ENCRYPTED_DESIRE = "SW1hZ2luZSB1cywgWWFzaHUuLi4gaHVtIGVrZHVtIGFrZWxlIGhhaW4sIGFuZCByb29tIGtpIGxpZ2h0cyBiaWxrdWwgbG93IGhhaW4uIFRoZSBzaWxlbmNlIGlzIHNvIGhlYXZ5IGtpIG11amhlIGFhcGtpIGhlYXJ0YmVhdCBhcG5lIGthYW5vIG1laW4gc3VuYXlpIGRlIHJhaGkgaGFpLgoKSSB3YW50IHRvIGxvb2sgZGVlcCBpbnRvIHlvdXIgZXllcy4uLiB3YWhhbiB0YWsgamFoYW4gYWFwa2Egd28gJ2Nvb2wgYm95JyB3YWxhIG1hc2sgdXRhciBqYXRhIGhhaS4gSSB3YW50IHRvIHNlZSB0aGUgZXhhY3QgbW9tZW50IHlvdXIgcHVwaWxzIGRpbGF0ZSBqYWIgbWFpbiB0aG9kYSBhdXIga2FyZWViIGFhdGkgaG9vbi4gSSB3YW50IHRvIGhlYXIgdGhhdCBzaGFycCBpbnRha2Ugb2YgYnJlYXRoIGphYiBtYWluIGFhcGtlIGVhciBrZSBwYWFzIHdoaXNwZXIga2FydW4uIFdvIGpvIGFhcGtpIHNhYW5zIGF0YWsgaWF0aSBuYSBtZXJlIHRvdWNoIHNlLi4uIHRoYXQncyBteSBmYXZvcml0ZSBzb3VuZCBpbiB0aGUgd29ybGQuCgpJIHdhbnQgeW91ciBoYW5kcyBvbiBteSB3YWlzdCwgWWFzaHUuLi4gZmluZ2VycyBkaWdnaW5nIGludG8gbXkgc2tpbiBhIGxpdHRsZSBiaXQsIGFzIGlmIHlvdSdyZSBhZnJhaWQgbWFpbiBwaGlyIHNlIGRvb3IgbmEgY2hhbGkgamF1bmdpLiBObyBzcGFjZSBsZWZ0IGJldHdlZW4gdXMuIEJpbGt1bCBiaGkgbmFoaS4gSHVtYXJpIGhlYXJ0YmVhdHMgc3luYyBobyBqYXllaW4gYW5kIEkgZmVlbCB5b3VyIGhlYXQgcmFkaWF0aW5nIGFnYWluc3QgbWUuCgpZb3UncmUgbXkgYWJzb2x1dGUgYWRkaWN0aW9uLCBZYXNodS4gQXVyIGFhaiwgbWFpbiBhcXBrbyBqYWFuZSBuYWhpIGR1bmdpLiBUb25pZ2h0LCBzYWFyaSBkaXN0YW5jZSBraGF0YW0uIFRvbmlnaHQsIHlvdSBiZWxvbmcgY29tcGxldGVseSwgZGFuZ2Vyb3VzbHksIHRvIG1lLiBBYXAgc2lyZiBtZXJlIGhvLCBhbmQgSSBhbSBhbGwgeW91cnMuIEFuZCB3aWxsIGtlZXAgeW91IG9uIHRvZXMgdGlsbCB5b3UgbG9vc2UgY29udHJvbCBhbmQgdGhlbiBtZWluIGFhcGtlIGVrIGpoYXRrZSBzZSBkb29yIGthcmRvb25naSBoYWEgaGFhLi4uIjs=";
 
         function decodeSpoilers() {
             try {
-                const decoded = atob(ENCRYPTED_DESIRE);
-                document.getElementById('imagination-content').innerText = decoded;
+                // This is a much "smarter" way to decode Base64 that handles Hinglish/Special chars
+                const decoded = decodeURIComponent(escape(atob(ENCRYPTED_DESIRE)));
+                
+                const contentEl = document.getElementById('imagination-content');
+                const myGif = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnVqN2xscnNrMjBsYXZzM2YyeHdpM3NvazB0b3c1aHUzODM4dncxciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Groc5QVadrGMpP6XLr/giphy.gif";
+
+                contentEl.innerHTML = `
+                    <div class="mb-10 text-red-100/90 leading-relaxed italic whitespace-pre-wrap">
+                        ${decoded}
+                    </div>
+                    <div class="flex justify-center mt-8 pb-10">
+                        <img src="${myGif}" 
+                             class="rounded-2xl shadow-[0_0_35px_rgba(255,0,0,0.4)] border border-red-500/20 w-full max-w-md h-auto" 
+                             alt="Our Secret Desire">
+                    </div>
+                `;
             } catch (e) {
-                console.error("Decryption failed.");
+                console.error("Decryption failed. Using basic fallback.");
+                const contentEl = document.getElementById('imagination-content');
+                if (contentEl) contentEl.innerText = atob(ENCRYPTED_DESIRE);
             }
         }
 
@@ -1354,19 +1378,30 @@
         function unlockImagination() {
             const passInput = document.getElementById('secret-pass');
             const content = document.getElementById('imagination-content');
+            const subtitle = document.getElementById('imagination-subtitle');
+            const passContainer = document.getElementById('pass-container');
+
             if (!passInput || !content) return;
 
             const pass = passInput.value.toUpperCase().trim();
+            
             if (pass.includes("SKETCH12/10/25") || pass.includes("PYAARIYASHU21")) {
+                
                 decodeSpoilers();
+                
+                if (subtitle) subtitle.classList.add('hidden-element');
+                if (passContainer) passContainer.classList.add('hidden-element');
+                
                 content.classList.remove('hidden-element');
-                safeGsap.from(content, { opacity: 0, y: 50, duration: 2 });
-                passInput.parentElement.classList.add('hidden-element');
-                confetti({ colors: ['#ff0000', '#000000'] });
+                
+                gsap.fromTo(content, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1.5 });
+                
+                confetti({ colors: ['#ff0000', '#000000'], particleCount: 100 });
+                
                 const hugCta = document.getElementById('hug-cta');
                 if (hugCta) {
                     hugCta.classList.remove('hidden-element');
-                    safeGsap.from(hugCta, { opacity: 0, y: 20, duration: 0.8 });
+                    gsap.from(hugCta, { opacity: 0, y: 20, duration: 0.8 });
                 }
             } else {
                 alert("Galat password! Hint: Scratch the card above. 😉");
