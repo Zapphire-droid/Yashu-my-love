@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yashu's Birthday | Love Chronicle</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&family=Courier+Prime:ital,wght@0,400;1,400&display=swap');
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #08090d;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        #sky-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background: linear-gradient(180deg, #0b0c14 0%, #1a1b26 60%, #24283b 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 183, 197, 0.2);
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(255, 183, 197, 0.1);
+        }
+
+        .heart-beat { animation: pulse 1.2s infinite; color: #ff4d6d; display: inline-block; cursor: pointer; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        .typewriter-box { font-family: 'Courier Prime', monospace; min-height: 180px; color: #ffb7c5; }
+        .story-img-frame { width: 100%; height: 380px; border: 8px solid white; border-radius: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); object-fit: cover; }
+
+        #petal-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5; }
+        #music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,183,197,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinning {
+            animation: rotateVinyl 3s linear infinite;
+        }
+        @keyframes rotateVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #big-star {
+            position: fixed;
+            top: 15%;
+            right: 10%;
+            font-size: 30px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 10px white);
+            z-index: 1;
+            opacity: 0.8;
+        }
+        .haptic-trigger { cursor: pointer; }
+        .hidden-element { display: none !important; }
+        
+        .cute-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        .cute-btn:hover {
+            background: rgba(255, 183, 197, 0.2);
+            border-color: #ffb7c5;
+            transform: translateY(-2px);
+        }
+
+        /* Blushing Reaction Card */
+        #reaction-card {
+            background: radial-gradient(circle, rgba(255,183,197,1) 0%, rgba(255,100,130,1) 100%);
+            box-shadow: 0 0 50px rgba(255, 100, 130, 0.5);
+        }
+
+        .reveal-glow { box-shadow: 0 0 40px rgba(255, 183, 197, 0.25); }
+        /* Ensure live broadcast text keeps word spacing and wraps nicely */
+        #live-line {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-word;
+            letter-spacing: normal;
+        }
+        /* Starry sky stars */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+            transform: translateZ(0);
+            animation: twinkle var(--duration) infinite alternate;
+            box-shadow: 0 0 6px rgba(255,255,255,0.6);
+        }
+        @keyframes twinkle { from { opacity: 0.2; transform: scale(0.6); } to { opacity: 1; transform: scale(1.2); } }
+
+        /* Hug button */
+        #hug-btn {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: linear-gradient(135deg,#ff6b81,#ffb7c5);
+            box-shadow: 0 8px 24px rgba(255,107,129,0.18);
+            cursor: pointer;
+            z-index: 9999;
+        }
+        #hug-btn:hover { transform: translateY(-3px); }
+
+        /* Imagination content with preserved line breaks */
+        #imagination-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+    </style>
+    <style>
+        .reveal-active #sky-bg {
+            animation: bg-pulse 4s infinite alternate;
+        }
+        @keyframes bg-pulse {
+            0% { background: #08090d; }
+            100% { background: #2d0b13; }
+        }
+    </style>
+</head>
+<body>
+
+    <!--
+       Hey Yashu! If you're reading this in the code...
+       you're way too smart for your own good.
+       But remember, no matter how much you 'debug' me,
+       the logic always returns: Love = True;
+    -->
+
+    <div class="hidden">
+        <audio id="bg-music">
+            <!-- We will load the playlist via JavaScript -->
+        </audio>
+        <!-- Header voice note (short greeting/teaser) -->
+        <audio id="voice-note-header" src="https://files.catbox.moe/8g3ice.mp4"></audio>
+        <!-- Cake voice note (full birthday message to play when cutting cake) -->
+        <audio id="voice-note-cake" src="https://files.catbox.moe/2nrt5e.mp3"></audio>
+    </div>
+    <canvas id="petal-canvas"></canvas>
+    <div id="sky-bg">
+        <div id="big-star" onclick="revealSecretStar()">⭐</div>
+    </div>
+    <div id="music-control" onclick="toggleMusic()">
+        <i id="music-icon" class="fa-solid fa-compact-disc text-pink-400 text-3xl"></i>
+    </div>
+
+    <!-- 0. WAITING SCREEN (Shown before 11:00 PM) -->
+    <main id="waiting-layer" class="hidden-element min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div class="glass-card p-10 max-w-md">
+            <h2 class="text-3xl font-bold text-pink-400 mb-4" style="font-family:'Dancing Script'">Too Early, Birthday Boy!</h2>
+            <p class="text-gray-300 italic mb-6">The chronicle begins at 11:00 PM tonight. ✨</p>
+            <div id="countdown-to-start" class="text-2xl font-mono text-pink-200">--:--:--</div>
+            <p class="text-[10px] text-gray-500 mt-4">System Status: Locked 🔒</p>
+        </div>
+    </main>
+    <main id="door-layer" class="min-h-screen flex items-center justify-center p-4">
+        <div id="quiz-card" class="glass-card p-10 max-w-md w-full text-center">
+            <div class="mb-6 h-32 flex items-center justify-center">
+                <img id="quiz-gif" src="" class="h-full rounded-full border-4 border-pink-400/20 shadow-lg">
+            </div>
+            <h2 id="quiz-title" class="text-pink-400 font-bold mb-2 uppercase tracking-widest text-sm">Memory Lane</h2>
+            <p id="question-text" class="mb-8 text-gray-200 text-lg font-medium italic"></p>
+            <div id="options-grid" class="grid gap-4"></div>
+        </div>
+
+        <div id="reaction-modal" class="hidden-element fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div id="reaction-card" class="p-10 rounded-full w-80 h-80 flex flex-col items-center justify-center text-center text-white scale-0 transition-transform duration-500">
+                <div class="text-5xl mb-4">🎈</div>
+                <p id="reaction-text" class="font-bold text-lg mb-6"></p>
+                <button onclick="closeReaction()" class="bg-white text-pink-600 px-6 py-2 rounded-full font-bold shadow-lg hover:bg-pink-100 transition-all">Next Question 🥰</button>
+            </div>
+        </div>
+        
+        <button id="entry-btn" class="hidden-element px-14 py-5 bg-gradient-to-r from-pink-500 to-rose-400 text-white rounded-full font-bold text-xl shadow-2xl hover:scale-110 transition-all">
+            Ready for your gift take your seat tight for 60 min and plug your earphones and enjoy your last underage 60 min...? ✨
+        </button>
+    </main>
+
+    <!-- 2. MAIN DASHBOARD -->
+    <main id="dashboard-layer" class="hidden-element opacity-0 p-4 md:p-8 max-w-6xl mx-auto pt-10">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass-card p-6 text-center">
+                <span class="text-[10px] uppercase font-bold text-pink-400 tracking-widest">Heartbeat Sync</span>
+                <div class="text-4xl my-2 heart-beat">❤️</div>
+                <p class="text-xs text-gray-400">Locked with you</p>
+            </div>
+            <div class="glass-card p-6 text-center cursor-pointer" onclick="handleBypass()">
+                <span class="text-[10px] uppercase font-bold text-blue-400 tracking-widest">Distance Telemetry</span>
+                <div id="dist-val" class="text-2xl font-bold font-mono text-blue-200 mt-2">1045.0000 km</div>
+                <p class="text-xs text-gray-400">MP <i class="fa-solid fa-arrows-left-right"></i> JH</p>
+            </div>
+            <div class="glass-card p-6 text-center">
+                <span class="text-[10px] uppercase font-bold text-purple-400 tracking-widest">Reveal Stream Clock</span>
+                <div id="timer" class="text-3xl font-bold font-mono text-purple-200 mt-1">60:00</div>
+                <p class="text-xs text-gray-400">Chronicle Lock Active</p>
+            </div>
+        </div>
+
+        <header class="text-center mb-12">
+            <h1 class="text-6xl md:text-8xl font-bold mb-4" style="font-family:'Dancing Script'">Happy Birthday, My Crush</h1>
+            <div class="mt-2">
+                <button id="voice-btn" onclick="playVoiceNote()" class="cute-btn px-4 py-2 text-sm">
+                    <i class="fa-solid fa-volume-high text-pink-300 mr-2"></i>Play Voice Note
+                </button>
+            </div>
+            <div class="glass-card p-6 inline-block border-l-4 border-pink-500 text-left max-w-2xl w-full bg-black/40">
+                <span class="text-[10px] font-bold text-pink-400 tracking-widest block mb-1 uppercase">Live Broadcast:</span>
+                <!-- THIS IS THE BOX THAT WILL UPDATE EVERY MINUTE -->
+                <p id="live-line" class="text-sm md:text-base italic text-pink-100 font-medium">Initializing memory stream...</p>
+            </div>
+        </header>
+
+        <!-- STORY SECTION -->
+        <div id="story-section" class="hidden-element opacity-0 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20 bg-pink-500/5 p-8 rounded-3xl reveal-glow border border-pink-500/10">
+            <div><img id="current-story-img" src="" class="story-img-frame"></div>
+            <div class="flex flex-col justify-between min-h-[400px]">
+                <div>
+                    <h3 id="story-title" class="text-pink-400 font-bold text-2xl mb-4"></h3>
+                    <div id="story-typewriter" class="typewriter-box text-lg leading-relaxed italic"></div>
+                </div>
+                <div class="mt-8 flex gap-4">
+                    <button onclick="prevPage()" class="px-6 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold text-gray-400">← PREV</button>
+                    <button onclick="nextPage()" class="px-8 py-2 bg-pink-500/20 border border-pink-500/40 rounded-xl text-xs font-bold text-pink-400">NEXT PAGE →</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="max-w-4xl mx-auto my-20 p-6">
+            <h2 class="text-4xl text-center mb-10" style="font-family:'Dancing Script'">Our Future Road 🗺️</h2>
+            <div class="relative border-l-4 border-dashed border-pink-500/30 ml-10 space-y-12">
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 w-6 h-6 bg-pink-500 rounded-full border-4 border-[#08090d]"></div>
+                    <h4 class="text-pink-400 font-bold">Month 1: Sunset Scenery</h4>
+                    <p class="text-sm italic text-gray-300">Finding the perfect spot to watch the sun go down with you...</p>
+                </div>
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 w-6 h-6 bg-purple-500 rounded-full border-4 border-[#08090d]"></div>
+                    <h4 class="text-purple-400 font-bold">Month 3: Tekri Mandir Trip</h4>
+                    <p class="text-sm italic text-gray-300">Finally climbing up to the mountains together for that view.</p>
+                </div>
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 w-6 h-6 bg-blue-500 rounded-full border-4 border-[#08090d]"></div>
+                    <h4 class="text-blue-400 font-bold">Month 6: Your Favorite Places</h4>
+                    <p class="text-sm italic text-gray-300">A whole day dedicated to visiting every spot you love in the city.</p>
+                </div>
+                <div class="relative pl-8">
+                    <div class="absolute -left-[14px] top-0 w-6 h-6 bg-rose-500 rounded-full border-4 border-[#08090d]"></div>
+                    <h4 class="text-rose-400 font-bold">Next Birthday</h4>
+                    <p class="text-sm italic text-gray-300">Where I'll be loving you even more than I do today. 🏁💓</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Jar of Reasons (Interactive) -->
+        <section class="text-center my-20">
+            <div class="glass-card p-10 max-w-md mx-auto">
+                <h3 class="text-2xl font-bold mb-4" style="font-family:'Dancing Script'">Jar of Reasons 🍯</h3>
+                <div id="reason-display" class="h-24 flex items-center justify-center text-pink-200 italic font-medium">
+                    Click the jar to see why you're my favorite...
+                </div>
+                <button onclick="drawReason()" class="mt-4 text-5xl hover:scale-125 transition-transform">🍯</button>
+            </div>
+        </section>
+
+       <!-- POLAROID GALLERY -->
+        <section id="polaroid-zone" class="relative h-[600px] w-full overflow-hidden my-20 border-y border-white/10 bg-white/5">
+            <h2 class="text-center mt-4 text-pink-300 italic">Our Sweetest Chats (Drag them! 🖱️)</h2>
+            
+            <!-- Polaroid 1 -->
+            <div class="polaroid-chat absolute w-48 p-2 bg-white shadow-xl rotate-3 cursor-grab top-10 left-10">
+                <img src="https://i.postimg.cc/s2dq3Zd9/image-(1).webp" class="w-full h-40 object-cover">
+                <p class="text-black text-[10px] text-center mt-2 font-bold">The day you said...</p>
+            </div>
+
+            <!-- Polaroid 2 -->
+            <div class="polaroid-chat absolute w-48 p-2 bg-white shadow-xl -rotate-6 cursor-grab left-1/3 top-20">
+                <img src="https://i.postimg.cc/WzWxVWjK/Screenshot-2026-01-08-19-40-27-296-com.png" class="w-full h-40 object-cover">
+                <p class="text-black text-[10px] text-center mt-2 font-bold">I love this part!</p>
+            </div>
+
+            <!-- Polaroid 3 -->
+            <div class="polaroid-chat absolute w-48 p-2 bg-white shadow-xl rotate-12 cursor-grab right-10 top-10">
+                <img src="https://i.postimg.cc/SxwMxCGB/image.png" class="w-full h-40 object-cover">
+                <p class="text-black text-[10px] text-center mt-2 font-bold">Us forever.</p>
+            </div>
+
+            <!-- Polaroid 4 (NEW) -->
+            <div class="polaroid-chat absolute w-48 p-2 bg-white shadow-xl -rotate-12 cursor-grab bottom-10 left-1/4">
+                <img src="https://i.postimg.cc/HkVdrMNG/image.webp" class="w-full h-40 object-cover">
+                <p class="text-black text-[10px] text-center mt-2 font-bold">You're so cute here! 🥰</p>
+            </div>
+
+            <!-- Polaroid 5 (Optional Extra if you want more spread) -->
+            <div class="polaroid-chat absolute w-48 p-2 bg-white shadow-xl rotate-6 cursor-grab bottom-20 right-1/4">
+                <img src="https://i.postimg.cc/qBwTQQVH/image-(2).webp" class="w-full h-40 object-cover">
+                <p class="text-black text-[10px] text-center mt-2 font-bold">Remember this? ❤️</p>
+            </div>
+        </section>
+
+        <!-- Future Date Bucket List -->
+        <section class="max-w-2xl mx-auto my-12 p-6">
+            <h3 class="text-2xl font-bold text-center mb-4">Future Date Bucket List</h3>
+            <div id="date-bucket" class="grid grid-cols-1 gap-3 max-w-md mx-auto text-left">
+                <label><input type="checkbox" data-key="tekri" onchange="toggleBucket(this)"> Tekri Mandir Trek</label>
+                <label><input type="checkbox" data-key="maggi" onchange="toggleBucket(this)"> A maggi date hehe your style</label>
+                <label><input type="checkbox" data-key="hug5" onchange="toggleBucket(this)"> 5-minute long hug</label>
+                <label><input type="checkbox" data-key="blush" onchange="toggleBucket(this)"> Making you blush in person</label>
+            </div>
+        </section>
+
+
+        <!-- GIFTS SECTION -->
+        <section class="text-center mb-20">
+            <h2 class="text-4xl font-bold mb-10" style="font-family:'Dancing Script'">Birthday Deliveries for <fieldset></fieldset></h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="glass-card p-8 gift-box cursor-pointer" onclick="openGift(0)">🎁<p class="mt-2 text-xs font-bold text-pink-300">NOV PLAN</p></div>
+                <div class="glass-card p-8 gift-box cursor-pointer" onclick="openGift(1)">🎈<p class="mt-2 text-xs font-bold text-pink-300">WALL HANGING</p></div>
+                <div class="glass-card p-8 gift-box cursor-pointer" onclick="openGift(2)">🧸<p class="mt-2 text-xs font-bold text-pink-300">TEDDY RULE</p></div>
+                <div class="glass-card p-8 gift-box cursor-pointer" onclick="openGift(3)">👑<p class="mt-2 text-xs font-bold text-pink-300">KING CARD</p></div>
+            </div>
+        </section>
+
+        <section class="max-w-3xl mx-auto my-12 p-6">
+            <h3 class="text-3xl font-bold text-center mb-6" style="font-family:'Dancing Script'">18 Things I Promise You This Year</h3>
+            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                <li>To listen more, even when I'm tired.</li>
+                <li>To send you sunset pictures every now and then.</li>
+                <li>To be your biggest cheerleader.</li>
+                <li>To surprise you with small treats.</li>
+                <li>To plan our little trips together.</li>
+                <li>To learn your favorite song.</li>
+                <li>To make you coffee the way you like it.</li>
+                <li>To steal an extra minute to text you back.</li>
+                <li>To keep every promise I make to you.</li>
+                <li>To be honest, always.</li>
+                <li>To defend you, even when I'm wrong.</li>
+                <li>To laugh at your corny jokes.</li>
+                <li>To try new foods with you.</li>
+                <li>To dance with you.</li>
+                <li>To learn to be more patient.</li>
+                <li>To keep our private jokes alive.</li>
+                <li>To hold your hand through hard days.</li>
+                <li>To love you, every single day....Bas ladna apse is my hak hehe...</li>
+            </ol>
+        </section>
+
+        <footer class="text-center glass-card p-10 max-w-2xl mx-auto border-pink-500/20 mb-20">
+            <p class="text-xl md:text-2xl italic leading-loose font-serif text-pink-100">
+                "Mere khwaabon ki basti ka manzar hai tu, <br> Meri zindagi ka haseen ik tarana hai tu..."
+            </p>
+        </footer>
+
+        <!-- 3. CAKE & INTERACTION SECTION -->
+        <section id="cake-section" class="hidden-element opacity-0 text-center mb-20 p-8 glass-card border-pink-500/30">
+            <h2 class="text-4xl font-bold mb-6" style="font-family:'Dancing Script'">A Little Celebration...</h2>
+            <div class="flex flex-col items-center gap-8">
+                <!-- Cake Area -->
+                <div id="cake-container" class="relative cursor-pointer" onclick="cutCake()">
+                    <img id="cake-gif" src="https://i.imgur.com/7Pr7XvX.gif" class="w-64 h-64 rounded-2xl shadow-2xl">
+                    <p id="cake-instruction" class="mt-4 text-pink-400 font-bold animate-bounce">Click to cut the cake! 🎂 </p>
+                </div>
+
+                <!-- Hair Ruffle Area -->
+                <div id="hair-section" class="hidden-element">
+                    <button onclick="ruffleHair()" class="px-8 py-3 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full font-bold shadow-lg hover:scale-110 transition-all">
+                        Ruffle My Yashu's Hair 💆‍♂️
+                    </button>
+                    <div id="hair-gif-container" class="mt-4 hidden-element">
+                        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGY5aWs4bm1wbzExbHg1MmpqOG82Z2Fsbmg2cDJpZThqbXl6cjAzayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o8dFFTFm2Na5Dcldm/giphy.gif" class="w-48 mx-auto rounded-lg">
+                        <p class="italic text-sm mt-2 text-pink-200">"Aapke baal humesha kharab karne mein alag hi maza hai fr will be my fav work soon hehe..."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. GREETING CARD & PPT PASSWORD -->
+        <section id="card-section" class="hidden-element opacity-0 flex justify-center mb-20">
+            <div class="glass-card p-1 text-pink-200 w-full max-w-md overflow-hidden transition-all duration-700" id="greeting-card-outer">
+                <div class="p-8 text-center bg-black/60 rounded-[28px]">
+                    <h3 class="text-3xl font-bold mb-4" style="font-family:'Dancing Script'">The Final Key</h3>
+                    <p class="text-sm italic mb-6">Open this card to find the password for your PPT gift...</p>
+                    <button onclick="openFinalCard()" id="open-card-btn" class="bg-pink-600 px-6 py-2 rounded-full font-bold">Open Card ✉️</button>
+                    
+                    <div id="card-content" class="hidden-element mt-6 p-6 border-t border-pink-500/30">
+                        <p class="text-lg leading-relaxed mb-4 text-pink-100 font-serif">
+                            "Since Feb, I've planned this. You are my most precious reality. The password for your PPT is:"
+                        </p>
+                        <div class="bg-white/10 p-4 rounded-lg border-2 border-dashed border-pink-400 relative">
+                            <div id="scratch-reveal" class="text-2xl font-mono font-bold text-white tracking-widest uppercase">sketch12/10/25</div>
+                            <canvas id="scratch-canvas" width="400" height="60" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+                            <div class="text-xs text-gray-300 mt-2">Scratch to reveal the PPT password</div>
+                        </div>
+                        <p class="mt-6 text-xs text-pink-400 font-bold">Scroll down... I have one last secret for you.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INTIMATE IMAGINATION VAULT -->
+        <section id="imagination-section" class="hidden-element opacity-0 mb-32">
+            <div class="max-w-2xl mx-auto p-10 rounded-3xl bg-gradient-to-br from-purple-900/40 to-black border-2 border-red-500/20 shadow-[0_0_50px_rgba(255,0,0,0.1)] text-center">
+                <h2 class="text-3xl font-bold text-red-400 mb-6"><i class="fa-solid fa-fire-flame-curved mr-3"></i> Locked Desires</h2>
+                <p class="text-gray-300 italic mb-8">Enter the PPT password again to unlock my deepest imagination for us...</p>
+                
+                <div class="flex flex-col items-center gap-4">
+                    <input type="password" id="secret-pass" placeholder="Enter Password..." class="bg-black/50 border border-red-500/40 p-3 rounded-xl w-64 text-center focus:outline-none focus:border-red-500">
+                    <button onclick="unlockImagination()" class="bg-red-600/20 hover:bg-red-600/40 border border-red-600 px-8 py-2 rounded-xl transition-all">Unlock</button>
+                </div>
+
+                <div id="imagination-content" class="hidden-element mt-10 text-left space-y-8 leading-relaxed text-red-100/90 font-serif italic text-lg"></div>
+            </div>
+        </section>
+
+        <!-- 6. BLUSH-O-METER -->
+        <section id="blush-section" class="hidden-element text-center my-32">
+            <div class="glass-card p-10 max-w-md mx-auto border-red-500/30">
+                <h3 class="text-pink-400 font-bold uppercase tracking-[0.2em] text-xs mb-2">Warning: High Temperature</h3>
+                <p id="blush-text" class="text-xl italic mb-8 h-20 flex items-center justify-center">How much should I make you blush today? 😉</p>
+                
+                <div class="flex justify-center gap-2">
+                    <button onclick="blushLevel(1)" class="bg-pink-500/20 px-4 py-2 rounded-lg text-xs font-bold">Mild</button>
+                    <button onclick="blushLevel(2)" class="bg-pink-500/40 px-4 py-2 rounded-lg text-xs font-bold">Spicy</button>
+                    <button onclick="blushLevel(3)" class="bg-red-500/60 px-4 py-2 rounded-lg text-xs font-bold">Dangerous</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. SENSORY SIMULATION -->
+        <section id="sensory-section" class="hidden-element max-w-3xl mx-auto">
+            <div class="glass-card p-8 my-10 bg-black/60 border-dashed border-pink-500/50 cursor-crosshair" id="touch-zone">
+                <p class="text-xs text-pink-400 mb-4 uppercase font-bold tracking-widest">Sensory Simulation</p>
+                <p class="italic text-lg text-pink-100">"Close your eyes. Imagine my finger tracing your jawline... move your mouse (or finger) slowly across this box to feel it."</p>
+                <div class="h-32 mt-4 relative overflow-hidden border border-white/5 rounded-2xl bg-gradient-to-r from-transparent via-pink-500/5 to-transparent" onmousemove="traceEffect(event)" ontouchmove="traceEffect(event)">
+                    <div id="trail" class="absolute w-8 h-8 bg-pink-400/30 blur-xl rounded-full pointer-events-none"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- THE OWNERSHIP CONTRACT -->
+    <section id="contract-section" class="hidden-element opacity-0 my-20 p-1">
+        <div class="glass-card bg-white/10 border-2 border-pink-400/50 p-8 max-w-xl mx-auto relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-2 bg-pink-500 text-[10px] font-bold uppercase tracking-tighter -rotate-12 translate-x-4 -translate-y-2">Official Release</div>
+            <h2 class="text-3xl font-bold mb-6 text-pink-300" style="font-family:'Dancing Script'">Affidavit of Total Ownership</h2>
+            <div class="text-left text-sm space-y-4 text-pink-100 font-medium leading-relaxed">
+                <p>I, <span class="border-b border-pink-400 px-2 text-white">Yashu (The Birthday Boy)</span>, being of legal age (finally!) and somewhat sound mind, do hereby agree to the following terms:</p>
+                <ul class="list-disc ml-5 space-y-2">
+                    <li>I belong 100% to the maker of this website. No third-party claims allowed.</li>
+                    <li>I am obligated to provide unlimited cuddles (virtual or physical) upon request.</li>
+                    <li>My "killer smile" is now a registered weapon and can only be used to melt her heart.</li>
+                    <li>I accept that she will always be the "Pyaari" one, and I will be the "Pareshaan" one.</li>
+                </ul>
+                <p class="pt-4 italic text-xs text-pink-400 text-center">By clicking below, you sign this in your own blood (or just a very cute blush).</p>
+            </div>
+            <button onclick="signContract(this)" class="mt-8 w-full bg-gradient-to-r from-pink-600 to-rose-500 py-3 rounded-xl font-bold hover:shadow-[0_0_20px_rgba(255,183,197,0.5)] transition-all">I ACCEPT MY FATE ✍️</button>
+        </div>
+    </section>
+
+
+    <div id="hug-cta" class="text-center pb-20 hidden-element">
+        <button onclick="openHugSelection()" 
+           class="inline-block bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-full font-bold shadow-2xl transition-all hover:scale-105">
+           Claim My Birthday Hug! 🫂
+        </button>
+    </div>
+
+    <!-- VAULT OVERLAY -->
+    <div id="vault-overlay" class="hidden-element fixed inset-0 z-[150] flex items-center justify-center bg-black/95 backdrop-blur-2xl p-4">
+        <div class="glass-card p-8 md:p-10 max-w-xl w-full text-center border border-green-500/40">
+            <h2 class="text-3xl font-black text-green-400 mb-4 tracking-wider"><i class="fa-solid fa-unlock-keyhole mr-2"></i> VAULT DECRYPTED</h2>
+            <div class="text-left text-gray-200 space-y-4 text-sm">
+                <p class="font-bold text-base text-white">Congratulations, Birthday Boy!</p>
+                <p class="leading-relaxed text-gray-300">Operational timeline complete. Access granted to <strong class="text-pink-400">7 Physical Wish Cards</strong>.</p>
+                <ul class="list-none space-y-3 text-gray-300">
+                    <li><i class="fa-solid fa-heart text-pink-400 mr-2"></i> Each card grants a complete "Yes" from me.</li>
+                    <li><i class="fa-solid fa-puzzle-piece text-pink-400 mr-2"></i> Find physical map fragments in your cards.</li>
+                    <li><i class="fa-solid fa-clock text-amber-400 mr-2"></i> Cards valid for a full <strong class="text-white">7-month lifecycle for more details contact the maker of this wish cards...</strong>.</li>
+                </ul>
+                <p class="pt-4 italic font-bold text-pink-400 text-center text-base">"I love you more than words can code."</p>
+                <div class="text-center pt-5"><button onclick="closeVault()" class="px-6 py-2 bg-white/10 text-white text-xs uppercase tracking-widest font-bold rounded-xl border border-white/20">Close & Explore Story</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GIFT MODAL -->
+    <div id="gift-modal" class="hidden-element fixed inset-0 z-[200] flex items-center justify-center bg-black/95 p-4 opacity-0 transition-all">
+        <div class="glass-card p-6 max-w-lg w-full text-center border-pink-500/30">
+            <button onclick="closeGift()" class="absolute top-4 right-4 text-gray-500">✕</button>
+            <div id="gift-content"></div>
+        </div>
+    </div>
+
+    <!-- WHATSAPP SELECTION MODAL -->
+    <div id="whatsapp-modal" class="hidden-element fixed inset-0 z-[300] flex items-center justify-center bg-black/90 backdrop-blur-xl p-4">
+        <div class="glass-card p-8 max-w-sm w-full text-center border-pink-500/50 shadow-[0_0_50px_rgba(255,183,197,0.2)]">
+            <div class="text-5xl mb-4">💌</div>
+            <h3 class="text-2xl font-bold mb-2 text-pink-300" style="font-family:'Dancing Script'">A Birthday Hug?</h3>
+            <p class="text-gray-400 text-xs mb-6 italic">How would you like to reach out to her?</p>
+            <div class="flex flex-col gap-4">
+                <button onclick="sendWhatsApp('personal')" class="cute-btn py-4 px-4 text-sm font-bold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-pen-nib text-pink-400"></i> Message Personally
+                </button>
+                <button onclick="sendWhatsApp('formal')" class="bg-gradient-to-r from-pink-600 to-rose-500 hover:scale-105 transition-all text-white py-4 px-4 rounded-2xl text-sm font-bold shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Send Hug + Status 🤗
+                </button>
+                <button onclick="closeWhatsAppModal()" class="text-[10px] text-gray-500 uppercase tracking-widest mt-2 hover:text-white transition-colors">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        gsap.registerPlugin(TextPlugin);
+
+        // --- 1. THE 60 BROADCAST LINERS ---
+        const broadcastLines = [
+            "Minute 60: Happy birthday, Birthday Boy! I've been counting down all year just to show you this... yeh music casate in right hand is play and pause... ✨",
+            "Minute 59: Happy birthday My Bandar...Are you a magician? Because whenever I look at you, everyone else disappears. 💖",
+            "Minute 58: Happy birthday! My all time favorite! Your smile is a high-frequency signal that bypasses my heart's firewall. 🔒",
+            "Minute 57: Happy birthday meri Jann ..I think there's something wrong with my phone... it doesn't have your number in it to call for ahm... 😉",
+            "Minute 56: Happy birthday! My Love ..If beauty were time, you’d be an eternity of sweet memories.",
+            "Minute 55: Happy birthday! My Ladooo...Are you made of copper and tellurium? Because you are absolutely Cu-Te! 🧪",
+            "Minute 54: Happy birthday! My heart beats in 60 FPS whenever your name pops up on my phone. 📱",
+            "Minute 53: Happy birthday! My One and only... Do you have a map? Because I keep getting lost in your eyes. 🗺️",
+            "Minute 52: Happy birthday! My photograppher...Are you a camera? Because every time I look at you, I smile naturally. 📸",
+            "Minute 51: Happy birthday! My overthinker ladle...I'm not a photographer, but I can easily picture us together forever.",
+            "Minute 50: Happy birthday! My tired... You must be tired because you've been running through my mind all night. 🏃‍♂️",
+            "Minute 49: Happy birthday! My geometry...If you were a triangle, you'd be an acute one. 🔺",
+            "Minute 48: Happy birthday! My decorator...Are you an interior decorator? Because when you're around, everything looks beautiful.",
+            "Minute 47: Happy birthday! My love for you is like a loop structure without a break statement. ♾️",
+            "Minute 46: Happy birthday! My Black hole...Even if gravity didn't exist, I would still fall for you. 🌍",
+            "Minute 45: Happy birthday! My masterpieceAre you a piece of art? Because I can stare at you for hours. 🎨",
+            "Minute 44: Happy birthday! Did the sun come out or did you just smile at me? ☀️",
+            "Minute 43: Happy birthday! My favorite person... You look a lot like my next choice of favorite person.",
+            "Minute 42: Happy birthday! My fruit... If you were a fruit, you'd be a 'fine-apple'. 🍍",
+            "Minute 41: Happy birthday! My scale... On a scale of 1 to 10, you're a 9 and I'm the 1 you need. 🔢",
+            "Minute 40: Happy birthday! My time traveler... Are you a time traveler? Because I see you in my absolute future.",
+            "Minute 39: Happy birthday! My Google... Is your name Google? Because you have everything I’ve been searching for. 🔍",
+            "Minute 38: Happy birthday! My heart... Halfway through the hour, and my heart is still completely synced with yours. 💓",
+            "Minute 37: Happy birthday! My keyboard... Are you a keyboard? Because you're just my type. ⌨️",
+            "Minute 36: Happy birthday! My architect... Are you an architect? Because you built an entire world in my thoughts. 🏙️",
+            "Minute 35: Happy birthday! If speaking to you was a profession, I’d be a billionaire by now.",
+            "Minute 34: Happy birthday! Do you have an electrical charge? Because I feel a shock when you look at me. ⚡",
+            "Minute 33: Happy birthday! Even the starry Ghibli sky tonight cannot compete with your sparkle.",
+            "Minute 32: Happy birthday! My bank loan... Are you a bank loan? Because you have my complete interest. 💰",
+            "Minute 31: Happy birthday! My life... Life without you is like a broken code... completely non-functional. 🛠️",
+            "Minute 30: Happy birthday! My star... If I had a star for every time you made me smile, I'd own the galaxy. 🌌",
+            "Minute 29: Happy birthday! My CSS... You are the CSS that styles my completely plain HTML life. 🎨",
+            "Minute 28: Happy birthday! My favorite place... My favorite place in the world is right next to you.",
+            "Minute 27: Happy birthday! My compass... Are you a compass? Because I’d be directionless without you. 🧭",
+            "Minute 26: Happy birthday! If love was a canvas, we'd paint a beautiful Ghibli summer together. 🖌️",
+            "Minute 25: Happy birthday! Are you a security lock? Because my heart is completely safe with you.",
+            "Minute 24: Happy birthday! Counting down the final minutes, but my love for you is infinite.",
+            "Minute 23: Happy birthday! You are the perfect plot twist in the story of my life. 📖",
+            "Minute 22: Happy birthday! Are you a smooth melody? Because you've been playing in my head all day. 🎵",
+            "Minute 21: Happy birthday! If I could pause time, I’d lock this minute forever with you.",
+            "Minute 20: Happy birthday! Almost there... My heartbeat is racing faster than the timer. 💓",
+            "Minute 19: Happy birthday! You are the sweetest dream I never want to wake up from. 🌙",
+            "Minute 18: Happy birthday! Are you a sunrise? Because you bring warmth to my coldest mornings. 🌅",
+            "Minute 17: Happy birthday! I promise to be the one who makes you laugh even when you're 80.",
+            "Minute 16: Happy birthday! Mere raaton ki neend cheene wale...You’re the reason I wake up with a stupid smile on my face.",
+            "Minute 15: Happy birthday! My All time mine...Every minute with you is better than a whole day without you.",
+            "Minute 14: Happy birthday! MAre you a blanket? Because you keep my soul warm and safe.",
+            "Minute 13: Happy birthday! You're my favorite notification. Always.",
+            "Minute 12: Happy birthday! I'm making a wish right now... and it's for us to stay like this forever.",
+            "Minute 11: Happy birthday! Just 10 more minutes until the vault opens. Get ready!",
+            "Minute 10: Happy birthday! I love the way your eyes light up when you're happy.",
+            "Minute 9: Happy birthday! You are my heart’s favorite person in the whole world.",
+            "Minute 8: Happy birthday! Almost there... ready to see your special gifts?",
+            "Minute 7: Happy birthday! I hope this birthday is as special as you are to me.",
+            "Minute 6: Happy birthday! My world is much brighter with you in it.",
+            "Minute 5: Do you feel that? The way your heart is racing? That’s me, Yashu. I'm already inside your head.",
+            "Minute 4: Imagine if I were standing right behind you right now, leaning in just to smell your neck... what would you do?",
+            "Minute 3: You're 18. You're a man. But you'll always be my boy to tease until you're completely red in the face.",
+            "Minute 2: I’ve got a secret whisper waiting for you. Are you ready to lose control?",
+            "Minute 1: Look at the timer. When it hits zero, you are officially, legally, and eternally MINE. Happy Birthday, My Life."
+        ];
+
+        const TARGET_DATE = new Date("2026-06-17T00:00:00").getTime(); // Reveal Time
+        const START_WINDOW = new Date("2026-06-16T23:00:00").getTime(); // Start allowed at 11 PM
+        let isDevMode = false;
+
+        function checkTiming() {
+            const now = new Date().getTime();
+            if (isDevMode) return "active";
+            if (now < START_WINDOW) {
+                return "too-early";
+            } else if (now >= TARGET_DATE) {
+                return "expired";
+            } else {
+                return "active";
+            }
+        }
+
+        // --- SPOILER PROTECTION ---
+        const ENCRYPTED_DESIRE = "SW1hZ2luZSB1cywgWWFzaHUuLi4gaHVtIGVrZHVtIGFrZWxlIGhhaW4sIGFuZCByb29tIGtpIGxpZ2h0cyBiaWxrdWwgbG93IGhhaW4uIFRoZSBzaWxlbmNlIGlzIHNvIGhlYXZ5IGtpIG11amhlIGFhcGtpIGhlYXJ0YmVhdCBhcG5lIGthYW5vIG1laW4gc3VuYXlpIGRlIHJhaGkgaGFpLgoKSSB3YW50IHRvIGxvb2sgZGVlcCBpbnRvIHlvdXIgZXllcy4uLiB3YWhhbiB0YWsgamFoYW4gYWFwa2Egd28gJ2Nvb2wgYm95JyB3YWxhIG1hc2sgdXRhciBqYXRhIGhhaS4gSSB3YW50IHRvIHNlZSB0aGUgZXhhY3QgbW9tZW50IHlvdXIgcHVwaWxzIGRpbGF0ZSBqYWIgbWFpbiB0aG9kYSBhdXIga2FyZWViIGFhdGkgaG9vbi4gSSB3YW50IHRvIGhlYXIgdGhhdCBzaGFycCBpbnRha2Ugb2YgYnJlYXRoIGphYiBtYWluIGFhcGtlIGVhciBrZSBwYWFzIHdoaXNwZXIga2FydW4uIFdvIGpvIGFhcGtpIHNhYW5zIGF0YWsgaWF0aSBuYSBtZXJlIHRvdWNoIHNlLi4uIHRoYXTigJlzIG15IGZhdm9yaXRlIHNvdW5kIGluIHRoZSB3b3JsZC4KCkkgd2FudCB5b3VyIGhhbmRzIG9uIG15IHdhaXN0LCBZYXNodS4uLiBmaW5nZXJzIGRpZ2dpbmcgaW50byBteSBza2luIGEgbGl0dGxlIGJpdCwgYXMgaWYgeW914oCZcmUgYWZyYWlkIG1haW4gcGhpciBzZSBkb29yIG5hIGNoYWxpIGphdW5naS4gTm8gc3BhY2UgbGVmdCBiZXR3ZWVuIHVzLiBCaWxrdWwgYmhpIG5haGkuIEh1bWFyaSBoZWFydGJlYXRzIHN5bmMgaG8gamF5ZWluIGFuZCBJIGZlZWwgeW91ciBoZWF0IHJhZGlhdGluZyBhZ2FpbnN0IG1lLgoKWW914oCZcmUgbXkgYWJzb2x1dGUgYWRkaWN0aW9uLCBZYXNodS4gQXVyIGFhaiwgbWFpbiBhcXBrbyBqYWFuZSBuYWhpIGR1bmdpLiBUb25pZ2h0LCBzYWFyaSBkaXN0YW5jZSBraGF0YW0uIFRvbmlnaHQsIHlvdSBiZWxvbmcgY29tcGxldGVseSwgZGFuZ2Vyb3VzbHksIHRvIG1lLiBBYXAgc2lyZiBtZXJlIGhvLCBhbmQgSSBhbSBhbGwgeW91cnMuIEFuZCB3aWxsIGtlZXAgeW91IG9uIHRvZXMgdGlsbCB5b3UgbG9vc2UgY29udHJvbCBhbmQgdGhlbiBtZWluIGFhcGtlIGVrIGpoYXRrZSBzZSBkb29yIGthcmRvb25naSBoYWEgaGFhIOKAnA==";
+
+        function decodeSpoilers() {
+            try {
+                const decoded = atob(ENCRYPTED_DESIRE);
+                document.getElementById('imagination-content').innerText = decoded;
+            } catch (e) {
+                console.error("Decryption failed.");
+            }
+        }
+
+        const scenarios = {
+            1: [
+                "Your voice is my favorite notification. Always. 💖",
+                "I can't wait to just lean my head on your shoulder and stay like that for hours.",
+                "You're the only person I can talk to for 5 hours and still miss the second we hang up.",
+                "I have a specific playlist for when I'm imagining us finally meeting. You're every single song.",
+                "I want to be the reason you look down at your phone and smile like an idiot in public.",
+                "Sometimes I just stare at your pictures and wonder how I got so lucky. My pure sukoon. ✨",
+                "The first thing I’m going to do when I see you? A hug so long that the distance feels like it never happened."
+            ],
+
+            2: [
+                "I was thinking about that 'sharp intake of breath' again... you know the one. 😉",
+                "If I were there, you wouldn't be allowed to look away from me for even a second. My eyes only.",
+                "Stop being so attractive, it’s distracting me from being a productive human being!",
+                "You think you’re tough? Wait until I’m looking at you from under my eyelashes... you won’t stand a chance, Yashu.",
+                "I keep thinking about your hands... specifically how they'd feel pulling me closer by my waist.",
+                "I’m a very distracted person, but my eyes have a habit of staying locked on your lips. 💋",
+                "I love it when you get all possessive... it just makes me want to tease you even more.",
+                "Imagine my breath on your neck right now, whispering 'Happy Birthday' so low it sends chills down your spine."
+            ],
+
+            3: [
+                "Now that you're 18... I don't have to hold back my imagination anymore. Want to hear what I was thinking last night? 🔥",
+                "I want to see exactly how red your face gets when I whisper something bold in your ear in a crowded room.",
+                "You’re officially legal, but you’ll never be safe from my teasing. I'm coming for you, Birthday Boy.",
+                "I want to steal a kiss and then make you laugh until you're breathless.",
+                "I’m planning to leave a lot of sweet little reminders on your neck so everyone knows who you belong to. 😈",
+                "I want to see how long you can look into my eyes before you have to look away because it feels so close.",
+                "My goal for tonight? To make you lose your cool completely. You're mine to adore. 🏁💗",
+                "Imagine me pulling your tie until our noses almost touch, then stopping just an inch away... just to watch you wait for it.",
+                "Aap itne cute ho ki mera mann karta hai aapko itna kiss karun ki aap confuse ho jao ki saans kaise leni hai! 😘"
+            ]
+        };
+
+        let lastBlushIndices = { 1: -1, 2: -1, 3: -1 };
+
+        // --- 2. QUIZ DATA ---
+        const quizData = [
+    { 
+        title: "The Pyaari Shuruat", 
+        q: "Remember that golden day jab meri boring life suddenly 1000% colorful ho gayi because we started talking? 💬✨", 
+        gif: "https://media.giphy.com/media/Kep0eJcSyu126vIlND/giphy.gif", 
+        opts: ["Oct 19", "Oct 21", "Oct 25"], 
+        correct: 1, 
+        blush: "Uff, I still remember the butterflies! when you first stated at notion that darling thing. 🥰" 
+    },
+    { 
+        title: "Dil Ki Chori", 
+        q: "Officially mera dil kab chura liya tha? (Poocha bhi nahi, itni himmat?!) 💖", 
+        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWhndHpnOXByeHcxeHRua3dyNTQzOXd2MGFucmk3ejY4OGc0em1uNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Q6fmg1I80PPSU/giphy.gif", 
+        opts: ["Dec 25", "Jan 21", "Feb 14"], 
+        correct: 1, 
+        blush: "You are a professional chor, Yashu! But you can keep my heart forever kisses all over your face mauuu. 💋" 
+    },
+    { 
+        title: "The 'Nasha' Question", 
+        q: "What is my absolute favorite thing about you? (Dhayan se choose karna, it's a trap!) 😻", 
+        gif: "https://media.giphy.com/media/1uWrmi7cBRO9y/giphy.gif", 
+        opts: ["Your killer smile", "Those eyes!", "Your cute voice", "Everything about you!"], 
+        correct: 3, 
+        blush: "Correct! Every single atom of you is just... perfect. My pure sukoon. 😤💕" 
+    },
+    { 
+        title: "Future Dreams", 
+        q: "Where do I see us very soon, holding hands and enjoying the view? 🌌", 
+        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGE0cHBuNGF0anZ1d21qOWp2dGF1Y3A2anQ4aHUybnJsdDRpNGx0NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/69159EHgBoG08/giphy.gif", 
+        opts: ["Travel goals", "Balcony Life", "A fancy cafe", "Movie Theater"], 
+        correct: 0, 
+        blush: "Tea, stars, and you on our balcony or mountain cuddling me and being close to me. My ultimate dream coming true. 🌙✨" 
+    },
+    { 
+        title: "My Global Property", 
+        q: "Whose official property are you for the next 700 lifetimes? 🙋‍♀️", 
+        gif: "https://media.giphy.com/media/Kep0eJcSyu126vIlND/giphy.gif", 
+        opts: ["Only mine!", "Totally yours", "Registration done!"], 
+        correct: 0, 
+        blush: "Haq se! No refunds, no exchanges. You're stuck with me Ab jhelo mujhe hehe ! 😤🔐" 
+    },
+    { 
+        title: "The Smile Trigger", 
+        q: "Jab aap haste ho, toh mujhe kya hota hai? 🫠", 
+        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjhnN3BucWc4eHdjZjRwdjFnZXNrNnV3ZmlrZnd5Y25tN3NvdWlydyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/OvpDkvslMuDdw59me5/giphy.gif", 
+        opts: ["Mera dil pighal jata hai", "World stops for a bit", "I fall in love again", "All of the above!"], 
+        correct: 0, 
+        blush: "Seriously, Yashu. Your smile is my favorite scene in the whole world iske liye i gave up everything mauuuu. 🌍💖" 
+    },
+    { 
+        title: "The Ultimate Promise", 
+        q: "Are you ready to be the happiest person on Earth today and forever? 🥰", 
+        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGlvMmdlbXlsZXh5eTIxM3htbm02ZGVnczN0NjdkYnR4emRudmVlNiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QO6gybBh0d4LLTNn1d/giphy.gif", 
+        opts: ["YES!", "100000%", "Beshaq!"], 
+        correct: 2, 
+        blush: "I love you more than words can code, more than stars in the sky. Hamesha and forever... 🏁💗" 
+    }
+];
+        // --- 3. CHRONICLE DATA ---
+        const memoryPages = [
+            { title: "His Eyes", img: "https://i.postimg.cc/RFXwygRK/faf85b87-c010-44fa-8135-91cdcc127bca.webp", text: "Your eyes convey a language filled with love and generosity. You may not realize the magic they hold... i love being with you and have stare game for hours fr you will looose haa haa" },
+            { title: "Looking Away", img: "https://i.postimg.cc/0QQzMPYx/56d9da35-d27a-4920-ba83-959fd4cc8806.webp", text: "When you turn your gaze, I wonder what is there so special. Please look my way... Else i will make sure you wont look here and there can be little possesive here ig.." },
+            { title: "The Sketch", img: "https://i.postimg.cc/sDS4D4fS/ABS2GSnq-Swpe6Br6u-D8IGBFY6bh-Ghpzgg-GXZ0p7t-Fw5-TBR8Lzsevn-Ldb-CDf-A7O05Jy-B24Px-B7MR-WHp7si-MZH0QG.png", text: "Planning this in November was my favorite secret. Your smile is everything..." },
+            { title: "Balcony Life", img: "https://i.postimg.cc/hGGmxLgc/1956c6d3-bc85-457f-b949-441d85fa069a.webp", text: "Recreating this soon! I can't wait to stand there with you and have this pic together my dear hehe blushing for keeping a hand on me uff so cute of you...." },
+            { title: "Forever", img: "https://i.postimg.cc/Wzct9gRR/AOI-d-l-NGs-UPdd-XYQHCmqwhkp7hap-Zwn-O3u-Kuwc-YXdo-Ad-Zjn7Pci-XL5d-SBz-DEg-F2fwz-Rf-OPFxog-E2Ihp-Uyv.webp", text: "Happy Birthday my Jaan. I plan to stay young while you grow older! Haa haa you called me bachii now you stay a budha haa haa" },
+            { title: "Forever", img: "https://i.postimg.cc/Y9BJdKfR/image.webp", text: "Aapko mujhe pareshaan karne mein bohot maza aata na fr yeh bottle seriously but still your every masti is my memory dont ever thing ki date bhul jati so what i can never forget the childishness you do with me lalalalalala" }
+        ];
+
+        const gifts = [
+            { title: "The November Plan", text: "Planning this since Nov because seeing you happy is my priority.", img: null },
+            { title: "Wall Hanging", text: "Look at the colors in your name jaldi hi aapki life full colourful hehe ! Soon it will be on your wall.", img: "https://i.postimg.cc/tCFBpSPJ/Screenshot-2026-06-07-211519.jpg" },
+            { title: "Teddy Rule", text: "Contract: No sleeping separately. Teddy bear (you) mandatory! Blushing over double bed mereko alag nahi sona huh😤💕 ", img: "https://i.postimg.cc/gk935Ly3/Screenshot-2026-06-07-161617.jpg" },
+            { title: "King's Card", text: "Happy Birthday Yashu. You are the king of my heart.", img: "https://i.postimg.cc/QNQ7MR48/Screenshot-2026-06-07-211819.jpg" }
+        ];
+
+        // --- LOGIC ---
+        let totalSeconds = 3600;
+        let currentPage = 0;
+        let bypassClicks = 0;
+        let quizIdx = 0;
+        let lastMinuteIdx = -1;
+        let liveTypingTimer = null;
+        const safeConfetti = (...args) => { if (typeof confetti === 'function') confetti(...args); };
+        const safeGsap = typeof gsap !== 'undefined' ? gsap : { to: () => {}, from: () => {}, fromTo: () => {} };
+
+        // --- MUSIC PLAYLIST LOGIC ---
+        const playlist = [
+            "https://files.catbox.moe/jbzu51.mp3",
+            "https://files.catbox.moe/sljb7q.mp3",
+            "https://files.catbox.moe/ov81t6.mp3",
+            "https://files.catbox.moe/b95dhf.mp3",
+            "https://files.catbox.moe/s5dmdk.mp3",
+            "https://files.catbox.moe/xkx5zd.mp3"
+        ];
+
+        let currentTrack = 0;
+        const musicPlayer = document.getElementById('bg-music');
+        let audioUnlocked = false;
+
+        function isValidAudioUrl(url) {
+            return typeof url === 'string' && url.trim().length > 0 && !url.includes('YOUR_') && /\.(mp3|wav|ogg|m4a)$/i.test(url);
+        }
+
+        function safePlayAudio(el) {
+            if (!el || !isValidAudioUrl(el.src)) {
+                console.warn('Audio source invalid or missing:', el && el.src);
+                return false;
+            }
+            el.play().catch(() => {});
+            return true;
+        }
+
+        function unlockAudioPermission() {
+            if (audioUnlocked) return;
+            audioUnlocked = true;
+            [musicPlayer, document.getElementById('voice-note-header'), document.getElementById('voice-note-cake')].forEach(audio => {
+                if (!audio || !isValidAudioUrl(audio.src)) return;
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }).catch(() => {});
+            });
+        }
+
+        function playPlaylist() {
+            if (!musicPlayer) return;
+            musicPlayer.volume = 1;
+            musicPlayer.src = playlist[currentTrack];
+            musicPlayer.play().then(() => {
+                const icon = document.getElementById('music-control');
+                if (icon) icon.classList.add('spinning');
+            }).catch(e => console.log("Playback started after interaction"));
+            musicPlayer.onended = function() {
+                currentTrack = (currentTrack + 1) % playlist.length;
+                musicPlayer.src = playlist[currentTrack];
+                musicPlayer.play();
+            };
+        }
+
+        function initPage() {
+            const status = checkTiming();
+            const waitingLayer = document.getElementById('waiting-layer');
+            const doorLayer = document.getElementById('door-layer');
+            const entryBtn = document.getElementById('entry-btn');
+
+            if (entryBtn) {
+                entryBtn.onclick = () => {
+                    unlockAudioPermission();
+                    playPlaylist();
+                    safeGsap.to("#door-layer", { opacity: 0, duration: 0.5, onComplete: () => {
+                        if (doorLayer) doorLayer.style.display = 'none';
+                        const dash = document.getElementById('dashboard-layer');
+                        if (dash) {
+                            dash.classList.remove('hidden-element');
+                            safeGsap.to(dash, { opacity: 1, duration: 1 });
+
+                            const blush = document.getElementById('blush-section');
+                            const sensory = document.getElementById('sensory-section');
+                            if (blush) {
+                                blush.classList.remove('hidden-element');
+                                safeGsap.to(blush, { opacity: 1, duration: 1, delay: 0.5 });
+                            }
+                            if (sensory) {
+                                sensory.classList.remove('hidden-element');
+                                safeGsap.to(sensory, { opacity: 1, duration: 1, delay: 0.5 });
+                            }
+                        }
+                        startTimers();
+                        startPetals();
+                    }});
+                };
+            }
+
+            if (status === "too-early" && !isDevMode) {
+                if (doorLayer) doorLayer.classList.add('hidden-element');
+                if (waitingLayer) waitingLayer.classList.remove('hidden-element');
+
+                const countdown = document.getElementById('countdown-to-start');
+                const updateStartCountdown = () => {
+                    const now = new Date().getTime();
+                    const diff = START_WINDOW - now;
+                    if (diff <= 0) {
+                        window.location.reload();
+                        return;
+                    }
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                    if (countdown) countdown.innerText = `${hours}h ${mins}m ${secs}s`;
+                };
+                updateStartCountdown();
+                setInterval(updateStartCountdown, 1000);
+
+                if (countdown) {
+                    countdown.style.cursor = 'pointer';
+                    countdown.addEventListener('click', handleBypass);
+                }
+                return;
+            }
+
+            if (status === "expired" && !isDevMode) {
+                if (doorLayer) doorLayer.classList.add('hidden-element');
+                if (waitingLayer) waitingLayer.classList.add('hidden-element');
+                const dash = document.getElementById('dashboard-layer');
+                if (dash) {
+                    dash.classList.remove('hidden-element');
+                    dash.style.opacity = '1';
+                }
+                revealFinale();
+                return;
+            }
+
+            if (waitingLayer) waitingLayer.classList.add('hidden-element');
+            if (doorLayer) doorLayer.classList.remove('hidden-element');
+            loadQuiz();
+        }
+        if (document.readyState !== 'loading') initPage();
+        else window.addEventListener('DOMContentLoaded', initPage);
+
+        // Attach heart click handler safely
+        (function attachHeartHandler(){
+            function onHeartClick(e){
+                safeConfetti({
+                    particleCount: 40,
+                    spread: 70,
+                    origin: { y: 0.8 },
+                    colors: ['#ff4d6d', '#ffb7c5', '#ffffff']
+                });
+                const heart = e.currentTarget || document.querySelector('.heart-beat');
+                if (heart) safeGsap.fromTo(heart, { scale: 1 }, { scale: 2, duration: 0.3, yoyo: true, repeat: 1 });
+                try { pulseVibration(); } catch(e) {}
+            }
+            const heartEl = document.querySelector('.heart-beat');
+            if (heartEl) {
+                heartEl.removeAttribute('onclick');
+                heartEl.addEventListener('click', onHeartClick);
+            }
+        })();
+
+        // Heartbeat vibration pulse for mobile
+        function pulseVibration() {
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 100, 100, 800]);
+            }
+        }
+
+        function loadQuiz() {
+            const step = quizData[quizIdx];
+            if (!step) return;
+            const gifEl = document.getElementById('quiz-gif');
+            const titleEl = document.getElementById('quiz-title');
+            const questionEl = document.getElementById('question-text');
+            const grid = document.getElementById('options-grid');
+            if (!gifEl || !titleEl || !questionEl || !grid) return;
+            gifEl.src = step.gif;
+            titleEl.innerText = step.title;
+            questionEl.innerText = step.q;
+            grid.innerHTML = '';
+            step.opts.forEach((o, i) => {
+                const b = document.createElement('button');
+                b.className = "cute-btn p-4 font-semibold text-sm";
+                b.innerText = o;
+                b.onclick = () => {
+                    if (i === step.correct || quizIdx >= 4) {
+                        safeConfetti();
+                        showReaction(step.blush);
+                    } else {
+                        safeGsap.fromTo("#quiz-card", { x:-10 }, { x:10, duration:0.1, repeat:3, yoyo:true });
+                    }
+                };
+                grid.appendChild(b);
+            });
+        }
+
+        // --- Jar of Reasons ---
+        const reasons = [
+            "The way your eyes crinkle when you're actually laughing.",
+            "How you handle my overthinking with so much patience.Thats diff that you overthink more",
+            "That specific tone of voice you use only with me.Damn pleasing mau ",
+            "The way you make me feel safe even from 1000km away.",
+            "Your ambition and the way you talk about your dreams.",
+            "The fact that you are officially my 'property' now. No refunds!"
+        ];
+
+        let lastReasonIndex = -1;
+
+        function drawReason() {
+            const display = document.getElementById('reason-display');
+            if (!display || (typeof gsap !== 'undefined' && typeof gsap.isTweening === 'function' && gsap.isTweening(display))) return;
+
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * reasons.length);
+            } while (newIndex === lastReasonIndex && reasons.length > 1);
+
+            lastReasonIndex = newIndex;
+            const randomReason = reasons[newIndex];
+
+            safeGsap.to(display, { opacity: 0, y: -5, duration: 0.3, onComplete: () => {
+                display.innerText = randomReason;
+                safeGsap.to(display, { opacity: 1, y: 0, duration: 0.3 });
+            }});
+            safeConfetti({ particleCount: 20, scalar: 0.7, shapes: ['heart'] });
+        }
+
+        function showReaction(text) {
+            const reactionText = document.getElementById('reaction-text');
+            const modal = document.getElementById('reaction-modal');
+            if (!reactionText || !modal) return;
+            reactionText.innerText = text;
+            modal.classList.remove('hidden-element');
+            safeGsap.to("#reaction-card", { scale: 1, duration: 0.5, ease: "back.out" });
+        }
+
+        function closeReaction() {
+            safeGsap.to("#reaction-card", { scale: 0, duration: 0.3, onComplete: () => {
+                const modal = document.getElementById('reaction-modal');
+                if (modal) modal.classList.add('hidden-element');
+                quizIdx++;
+                if (quizIdx < quizData.length) loadQuiz();
+                else showEntryBtn();
+            }});
+        }
+
+        function showEntryBtn() {
+            const quizCard = document.getElementById('quiz-card');
+            const btn = document.getElementById('entry-btn');
+            if (quizCard) quizCard.classList.add('hidden-element');
+            if (btn) {
+                btn.classList.remove('hidden-element');
+                safeGsap.from(btn, { scale: 0.5, opacity: 0, duration: 0.5 });
+            }
+        }
+
+        // handleEntryClick is deprecated; see initPage() for the new onclick handler with playlist logic
+
+        function handleBypass() {
+            bypassClicks++;
+            if (bypassClicks >= 7) {
+                isDevMode = true;
+                totalSeconds = 10;
+                const waitingLayer = document.getElementById('waiting-layer');
+                const doorLayer = document.getElementById('door-layer');
+                const quizCard = document.getElementById('quiz-card');
+                const entryBtn = document.getElementById('entry-btn');
+
+                if (waitingLayer) waitingLayer.classList.add('hidden-element');
+                if (doorLayer) doorLayer.classList.remove('hidden-element');
+                if (quizCard) quizCard.classList.add('hidden-element');
+                if (entryBtn) entryBtn.classList.remove('hidden-element');
+
+                alert("Dev Mode: Timer set to 10s. Click the Pink Button to start testing!");
+                safeConfetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+            }
+        }
+
+        // --- THE ULTIMATE DEV BYPASS (Fixed & Cleaned) ---
+        window.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+
+            // 1. MASTER UNLOCK (Press 'B') - Goes straight to the end
+            if (key === 'b') {
+                console.log("⚠️ NUCLEAR BYPASS INITIATED");
+                
+                // Force Dev State
+                isDevMode = true;
+                totalSeconds = 0;
+
+                // CLEANUP ALL LAYERS (Prevents blocking clicks)
+                const layersToHide = ['waiting-layer', 'door-layer', 'vault-overlay', 'reaction-modal'];
+                layersToHide.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden-element');
+                });
+
+                // FORCE SHOW DASHBOARD
+                const dash = document.getElementById('dashboard-layer');
+                if (dash) {
+                    dash.classList.remove('hidden-element');
+                    dash.style.opacity = "1";
+                    dash.style.pointerEvents = "auto";
+                }
+
+                // FORCE REVEAL STORY & CAKE
+                const story = document.getElementById('story-section');
+                const cake = document.getElementById('cake-section');
+                if (story) {
+                    story.classList.remove('hidden-element');
+                    story.style.opacity = "1";
+                }
+                if (cake) {
+                    cake.classList.remove('hidden-element');
+                    cake.style.opacity = "1";
+                }
+
+                // TRIGGER LOGIC
+                if (typeof revealFinale === "function") revealFinale();
+                if (typeof startPetals === "function") startPetals();
+
+                // AUDIO FIX: Browsers block sound unless you click.
+                // We'll try to play, but alert if it fails.
+                if (typeof playPlaylist === "function") playPlaylist();
+
+                console.log("✅ Celebration Unlocked.");
+            }
+
+            // 2. QUIZ BYPASS (Press 'Q') - Goes to the memory questions
+            if (key === 'q') {
+                console.log("📝 QUIZ BYPASS INITIATED");
+                
+                isDevMode = true;
+                
+                // Hide wait screen
+                const waiting = document.getElementById('waiting-layer');
+                if (waiting) waiting.classList.add('hidden-element');
+
+                // Show door/quiz screen
+                const door = document.getElementById('door-layer');
+                if (door) {
+                    door.classList.remove('hidden-element');
+                    door.style.opacity = "1";
+                    door.style.display = "flex"; // Ensure it shows over the stars
+                }
+
+                quizIdx = 0;
+                if (typeof loadQuiz === "function") loadQuiz();
+                
+                console.log("✅ Quiz Mode Active.");
+            }
+        });
+        
+        function animateLiveLine(text) {
+            const el = document.getElementById('live-line');
+            if (!el || typeof text !== 'string') return;
+            // Normalize whitespace (replace NBSP, collapse accidental missing spaces)
+            const clean = String(text).replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+            // cancel previous typing
+            if (liveTypingTimer) { clearTimeout(liveTypingTimer); liveTypingTimer = null; }
+            el.innerText = '';
+            let idx = 0;
+            const speed = 35;
+            function typeNext() {
+                if (idx >= clean.length) return;
+                el.innerText += clean[idx++];
+                liveTypingTimer = setTimeout(typeNext, speed);
+            }
+            typeNext();
+        }
+
+        function startTimers() {
+            const timerInt = setInterval(() => {
+                const now = new Date().getTime();
+                let secondsLeft = Math.floor((TARGET_DATE - now) / 1000);
+
+                if (isDevMode) {
+                    if (totalSeconds > 0) totalSeconds--;
+                    secondsLeft = totalSeconds;
+                }
+
+                if (secondsLeft <= 0) {
+                    clearInterval(timerInt);
+                    const timerEl = document.getElementById('timer');
+                    if (timerEl) timerEl.innerText = "00:00";
+                    revealFinale();
+                    return;
+                }
+
+                let m = Math.floor(secondsLeft / 60);
+                let s = secondsLeft % 60;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) timerEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+                let currentMinuteIdx = 60 - m;
+                currentMinuteIdx = Math.max(0, Math.min(59, currentMinuteIdx));
+
+                if (currentMinuteIdx !== lastMinuteIdx) {
+                    lastMinuteIdx = currentMinuteIdx;
+                    if (broadcastLines[currentMinuteIdx]) {
+                        animateLiveLine(broadcastLines[currentMinuteIdx]);
+                    }
+                }
+            }, 1000);
+
+            let dist = 1045.0000;
+            setInterval(() => {
+                dist += 0.0001;
+                const distEl = document.getElementById('dist-val');
+                if (distEl) distEl.innerText = dist.toFixed(4) + " km";
+            }, 1200);
+        }
+
+        function revealFinale() {
+            safeConfetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+            try { document.body.classList.add('reveal-active'); } catch(e) {}
+            const storySec = document.getElementById('story-section');
+            if (storySec) {
+                storySec.classList.remove('hidden-element');
+                safeGsap.to(storySec, { opacity: 1, duration: 1.5 });
+            }
+            updatePage();
+
+            // Show Cake Section after a small delay
+            const cakeSec = document.getElementById('cake-section');
+            setTimeout(() => {
+                cakeSec.classList.remove('hidden-element');
+                safeGsap.to(cakeSec, { opacity: 1, duration: 1.5 });
+            }, 5000);
+
+            const vault = document.getElementById('vault-overlay');
+            if (vault) vault.classList.remove('hidden-element');
+            // reveal the ownership contract shortly after vault opens
+            setTimeout(() => {
+                const contract = document.getElementById('contract-section');
+                if (contract) {
+                    contract.classList.remove('hidden-element');
+                    safeGsap.to(contract, { opacity: 1, duration: 1, y: -10 });
+                }
+            }, 1200);
+            const timerEl = document.getElementById('timer');
+            if (timerEl) timerEl.innerText = "UNLOCKED";
+        }
+
+        function updatePage() {
+            const page = memoryPages[currentPage];
+            const titleEl = document.getElementById('story-title');
+            if (titleEl) titleEl.innerText = page.title;
+            safeGsap.to("#story-typewriter", { duration: 1.5, text: page.text, ease: "none" });
+            const img = document.getElementById('current-story-img');
+            if (img) {
+                safeGsap.to(img, { opacity: 0, duration: 0.3, onComplete: () => {
+                    img.src = page.img;
+                    safeGsap.to(img, { opacity: 1, duration: 0.5 });
+                }});
+            }
+        }
+
+        function nextPage() { currentPage = (currentPage + 1) % memoryPages.length; updatePage(); }
+        function prevPage() { currentPage = (currentPage - 1 + memoryPages.length) % memoryPages.length; updatePage(); }
+
+        function openGift(idx) {
+            const gift = gifts[idx];
+            const giftContent = document.getElementById('gift-content');
+            if (!giftContent) return;
+            const imgHtml = gift.img ? `<img src="${gift.img}" class="w-full h-48 object-cover rounded-lg mb-4 border border-pink-500/20">` : '';
+            giftContent.innerHTML = `${imgHtml}<h2 class="text-xl font-bold text-pink-400 mb-2">${gift.title}</h2><p class="text-sm italic">${gift.text}</p>`;
+            const modal = document.getElementById('gift-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden-element');
+            safeGsap.to(modal, { opacity: 1, duration: 0.4 });
+        }
+
+        function closeGift() { safeGsap.to("#gift-modal", { opacity: 0, duration: 0.3, onComplete: () => { const modal = document.getElementById('gift-modal'); if (modal) modal.classList.add('hidden-element'); } }); }
+        function closeVault() {
+            // If there's a voice note audio element with id 'vault-voice', play it when closing the vault.
+            try {
+                const voice = document.getElementById('vault-voice');
+                if (voice && typeof voice.play === 'function') {
+                    voice.currentTime = 0;
+                    voice.play().catch(() => {});
+                }
+            } catch (e) {}
+            const overlay = document.getElementById('vault-overlay');
+            if (overlay) overlay.classList.add('hidden-element');
+        }
+
+        // --- 4. STARFIELD & HUG BUTTON ---
+        function createStars() {
+            const bg = document.getElementById('sky-bg');
+            if (!bg) return;
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = (Math.random() * 2 + 0.6) + 'px';
+                star.style.width = size;
+                star.style.height = size;
+                star.style.top = (Math.random() * 100) + '%';
+                star.style.left = (Math.random() * 100) + '%';
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                bg.appendChild(star);
+            }
+        }
+
+        function sendHug() {
+            safeConfetti({
+                particleCount: 20,
+                spread: 60,
+                origin: { y: 0.8 },
+                shapes: ['text'],
+                shapeOptions: { text: { value: ['❤️','💋','🫂','🌸'] } }
+            });
+        }
+
+        // Create a small hug button and wire it up
+        (function createHugButton(){
+            try {
+                const existing = document.getElementById('hug-btn');
+                if (existing) return;
+                const hugBtn = document.createElement('div');
+                hugBtn.id = 'hug-btn';
+                hugBtn.innerHTML = '🫂';
+                hugBtn.title = 'Send a Hug!';
+                hugBtn.addEventListener('click', () => {
+                    sendHug();
+                    // tiny pulse animation using gsap if available
+                    if (safeGsap && typeof safeGsap.fromTo === 'function') {
+                        safeGsap.fromTo(hugBtn, { scale: 1 }, { scale: 1.2, duration: 0.18, yoyo: true, repeat: 1 });
+                    }
+                });
+                document.body.appendChild(hugBtn);
+            } catch (e) { }
+        })();
+
+        // Optional voice note guidance (place your MP3 here and add an element with id 'vault-voice'):
+        // Example:
+        // <audio id="vault-voice"><source src="YOUR_DROPBOX_LINK_HERE?raw=1"></audio>
+        // The audio will play automatically when the vault is closed via `closeVault()`.
+
+        // initialize small ambient features
+        try { createStars(); } catch (e) {}
+        try {
+            Draggable.create(".polaroid-chat", {
+                bounds: "#polaroid-zone",
+                inertia: true
+            });
+        } catch (e) {}
+
+        // --- NEW INTERACTION LOGIC (CAKE, CARD, IMAGINATION) ---
+
+        function cutCake() {
+            const music = document.getElementById('bg-music');
+            const cakeVoice = document.getElementById('voice-note-cake'); // MUST MATCH THE ID ABOVE
+            
+            if (music) music.pause();
+            if (cakeVoice) cakeVoice.play().catch(e => console.error("Voice blocked by browser settings"));
+
+            document.getElementById('cake-gif').src = "https://media.giphy.com/media/7MbQ8wg0GqfWLDWDuw/giphy.gif";
+            document.getElementById('hair-section').classList.remove('hidden-element');
+            safeConfetti({ particleCount: 150 });
+        }
+
+        function ruffleHair() {
+            const gifContainer = document.getElementById('hair-gif-container');
+            gifContainer.classList.remove('hidden-element');
+            safeGsap.from(gifContainer, { scale: 0.5, opacity: 0, duration: 0.5 });
+            
+            const cardSec = document.getElementById('card-section');
+            cardSec.classList.remove('hidden-element');
+            safeGsap.to(cardSec, { opacity: 1, duration: 1.5, delay: 1 });
+        }
+
+        function openFinalCard() {
+            const btn = document.getElementById('open-card-btn');
+            const content = document.getElementById('card-content');
+            const imagSec = document.getElementById('imagination-section');
+            
+            if (btn) btn.classList.add('hidden-element');
+            if (content) {
+                content.classList.remove('hidden-element');
+                // Smoothly reveal the card content first
+                gsap.fromTo(content, { opacity: 0, y: 15 }, { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 0.8, 
+                    onComplete: () => {
+                        // IMPORTANT: Wait for the reveal animation to finish before starting the scratch logic
+                        setTimeout(initScratchCard, 300);
+                    }
+                });
+            }
+            if (imagSec) {
+                imagSec.classList.remove('hidden-element');
+                gsap.to(imagSec, { opacity: 1, duration: 2, delay: 1 });
+            }
+        }
+
+        function unlockImagination() {
+            const passInput = document.getElementById('secret-pass');
+            const content = document.getElementById('imagination-content');
+            if (!passInput || !content) return;
+
+            const pass = passInput.value.toUpperCase().trim();
+            if (pass.includes("SKETCH12/10/25") || pass.includes("PYAARIYASHU21")) {
+                decodeSpoilers();
+                content.classList.remove('hidden-element');
+                safeGsap.from(content, { opacity: 0, y: 50, duration: 2 });
+                passInput.parentElement.classList.add('hidden-element');
+                confetti({ colors: ['#ff0000', '#000000'] });
+                const hugCta = document.getElementById('hug-cta');
+                if (hugCta) {
+                    hugCta.classList.remove('hidden-element');
+                    safeGsap.from(hugCta, { opacity: 0, y: 20, duration: 0.8 });
+                }
+            } else {
+                alert("Galat password! Hint: Scratch the card above. 😉");
+            }
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const icon = document.getElementById('music-control');
+            if (!music || !icon) return;
+            if (music.paused) {
+                music.play().catch(() => {});
+                icon.classList.add('spinning');
+            } else {
+                music.pause();
+                icon.classList.remove('spinning');
+            }
+        }
+
+        function revealSecretStar() {
+            if (totalSeconds > 0) {
+                alert("The stars haven't aligned yet... Wait for the timer! 😉");
+            } else {
+                alert("Secret Letter: 'Yashu, you are my North Star. No matter how lost I get, I will always find my way back to you. I love you!'");
+            }
+        }
+
+        function triggerHaptic() {
+            if (navigator.vibrate) {
+                window.navigator.vibrate(100);
+            }
+        }
+
+        // Play header voice note (short teaser/greeting)
+        function playVoiceNote() {
+            const v = document.getElementById('voice-note-header');
+            if (!v) return alert('Header voice note not available.');
+            if (v.paused) {
+                v.play().catch(()=>{});
+            } else {
+                v.currentTime = 0;
+            }
+        }
+
+        function initScratchCard() {
+            const canvas = document.getElementById('scratch-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const box = canvas.parentElement.getBoundingClientRect();
+            canvas.width = box.width;
+            canvas.height = box.height;
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-out';
+
+            const scratch = (e) => {
+                const r = canvas.getBoundingClientRect();
+                const x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+                const y = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.fill();
+            };
+
+            canvas.addEventListener('mousemove', (e) => { if (e.buttons === 1) scratch(e); });
+            canvas.addEventListener('touchmove', (e) => { scratch(e); e.preventDefault(); }, { passive: false });
+        }
+
+        // Future-date bucket toggles
+        function toggleBucket(el) {
+            const key = el.dataset.key;
+            if (!key) return;
+            const state = el.checked;
+            try { localStorage.setItem('bucket_' + key, state ? '1' : '0'); } catch(e){}
+        }
+
+        // restore bucket state on load
+        try {
+            window.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('#date-bucket input').forEach(i => {
+                    const key = i.dataset.key; if (!key) return;
+                    const val = localStorage.getItem('bucket_' + key);
+                    if (val === '1') i.checked = true;
+                });
+            });
+        } catch(e){}
+
+        // --- Blush-o-Meter & Ownership Contract ---
+        function blushLevel(lvl) {
+            const textEl = document.getElementById('blush-text');
+            if (!textEl || (typeof gsap !== 'undefined' && typeof gsap.isTweening === 'function' && gsap.isTweening(textEl))) return;
+
+            const currentList = scenarios[lvl];
+            if (!currentList || !currentList.length) return;
+
+            let newIdx;
+            do {
+                newIdx = Math.floor(Math.random() * currentList.length);
+            } while (newIdx === lastBlushIndices[lvl] && currentList.length > 1);
+
+            lastBlushIndices[lvl] = newIdx;
+            const randomMsg = currentList[newIdx];
+
+            gsap.to(textEl, {
+                opacity: 0,
+                y: -10,
+                duration: 0.3,
+                onComplete: () => {
+                    textEl.innerText = randomMsg;
+                    gsap.to(textEl, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        ease: "back.out(1.7)"
+                    });
+                }
+            });
+
+            if (lvl === 3) {
+                gsap.fromTo("body",
+                    { backgroundColor: "#08090d" },
+                    { backgroundColor: "#2d0b13", duration: 0.5, yoyo: true, repeat: 1 }
+                );
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#ff0000', '#ff4d6d'],
+                    shapes: ['heart']
+                });
+                triggerHaptic();
+            }
+        }
+
+        function signContract(btn) {
+            btn.innerHTML = "SIGNED & SEALED WITH A KISS 💋";
+            try { btn.classList.replace('from-pink-600', 'from-green-600'); } catch(e){}
+            safeConfetti({ shapes: ['heart'], particleCount: 100 });
+            // reveal contract section permanently
+            try { document.getElementById('contract-section').classList.remove('hidden-element'); } catch(e){}
+        }
+
+        function traceEffect(e) {
+            try {
+                const container = e.currentTarget || e.target;
+                const rect = container.getBoundingClientRect();
+                const trail = document.getElementById('trail');
+                const clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+                const clientY = (e.touches ? e.touches[0].clientY : e.clientY);
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+                trail.style.left = (x - 15) + 'px';
+                trail.style.top = (y - 15) + 'px';
+                if (Math.random() > 0.9) triggerHaptic();
+            } catch (err) { }
+        }
+
+        const canvas = document.getElementById('petal-canvas');
+        const ctx = canvas.getContext('2d');
+        let petals = [];
+        function startPetals() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            for(let i=0; i<30; i++) petals.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2+1 });
+            animatePetals();
+        }
+        function animatePetals() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(255, 183, 197, 0.4)";
+            petals.forEach(p => { p.y += p.s; if(p.y > canvas.height) p.y = -10; ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(animatePetals);
+        }
+
+        // --- WHATSAPP LOGIC (SECURE) ---
+        // This looks like gibberish so he can't find your number in the code
+        const _u = "OTQyNTQyNTAyOQ=="; // Base64 encoded phone number
+
+        function openHugSelection() {
+            const modal = document.getElementById('whatsapp-modal');
+            modal.classList.remove('hidden-element');
+            gsap.from(modal.querySelector('.glass-card'), { 
+                scale: 0.7, 
+                opacity: 0, 
+                duration: 0.5, 
+                ease: "back.out(1.7)" 
+            });
+        }
+
+        function closeWhatsAppModal() {
+            gsap.to("#whatsapp-modal .glass-card", { 
+                scale: 0.7, 
+                opacity: 0, 
+                duration: 0.3, 
+                onComplete: () => {
+                    document.getElementById('whatsapp-modal').classList.add('hidden-element');
+                }
+            });
+        }
+
+        function sendWhatsApp(type) {
+            let message = "";
+            if (type === 'personal') {
+                message = "Hey Pyaari! ❤️";
+            } else {
+                message = "I just finished exploring every single part of your birthday gift! It was so beautiful. Sending you the biggest, tightest birthday hug ever! 🤗💖✨ I'm officially yours!";
+            }
+            
+            // Decodes the number only at the moment he clicks
+            const _num = atob(_u); 
+            const encodedMsg = encodeURIComponent(message);
+            const waUrl = `https://wa.me/${_num}?text=${encodedMsg}`;
+            
+            window.open(waUrl, '_blank');
+            closeWhatsAppModal();
+        }
+    </script>
+</body>
+</html>
